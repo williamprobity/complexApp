@@ -7,6 +7,7 @@ import ProfilePosts from "./ProfilePosts"
 import ProfileFollowers from "./ProfileFollowers"
 import ProfileFollowing from "./ProfileFollowing"
 import {useImmer} from 'use-immer'
+import Capitalize from 'react-capitalize'
 
 
 function Profile() {
@@ -109,7 +110,8 @@ function Profile() {
   return (
     <Page title="Profile Screen">
       <h2>
-        <img className="avatar-small" src={state.profileData.profileAvatar} /> {state.profileData.profileUsername}
+        <img className="avatar-small" src={state.profileData.profileAvatar} /> 
+        <Capitalize>{state.profileData.profileUsername}</Capitalize>
         {appState.loggedIn && !state.profileData.isFollowing && appState.user.username != state.profileData.profileUsername && state.profileData.profileUsername != '...' && (
           <button onClick={startFollowing} disabled={state.followActionLoading} className="btn btn-primary btn-sm ml-2">
           Follow <i className="fas fa-user-plus"></i>

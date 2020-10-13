@@ -9,6 +9,7 @@ import NotFound from "./NotFound"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
+
 function ViewSinglePost(props) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
@@ -22,8 +23,8 @@ function ViewSinglePost(props) {
     async function fetchPost() {
       try {
         const response = await Axios.get(`/post/${id}`, { cancelToken: ourRequest.token })
-        setPost(response.data);
-        setIsLoading(false);
+        setPost(response.data)
+        setIsLoading(false)
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
       }

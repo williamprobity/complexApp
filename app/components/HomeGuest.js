@@ -1,34 +1,35 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import Page from "./Page"
 import Axios from "axios"
-import {useImmerReducer} from 'use-immer'
-import {CSSTransition} from 'react-transition-group'
-import DispatchContext from '../DispatchContext'
+import { useImmerReducer } from "use-immer"
+import { CSSTransition } from "react-transition-group"
+import DispatchContext from "../DispatchContext"
 
 function HomeGuest() {
   const appDispatch = useContext(DispatchContext)
+
   const initialState = {
     username: {
       value: "",
       hasErrors: false,
       message: "",
       isUnique: false,
-      checkCount: 0
+      checkCount: 0,
     },
     email: {
       value: "",
       hasErrors: false,
       message: "",
       isUnique: false,
-      checkCount: 0
+      checkCount: 0,
     },
     password: {
       value: "",
       hasErrors: false,
-      message: ""
+      message: "",
     },
-    submitCount: 0
-  }  
+    submitCount: 0,
+  }
 
   function ourReducer(draft, action) {
     switch (action.type) {
@@ -45,7 +46,7 @@ function HomeGuest() {
         }
         return
       case "usernameAfterDelay":
-        if (draft.username.value.length < 3 ) {
+        if (draft.username.value.length < 3) {
           draft.username.hasErrors = true
           draft.username.message = "Username must be at least 3 characters."
         }
@@ -58,7 +59,7 @@ function HomeGuest() {
           draft.username.hasErrors = true
           draft.username.isUnique = false
           draft.username.message = "That username is already taken."
-        }else{
+        } else {
           draft.username.isUnique = true
         }
         return
@@ -80,14 +81,14 @@ function HomeGuest() {
           draft.email.hasErrors = true
           draft.email.isUnique = false
           draft.email.message = "That email is already being used."
-        }else {
+        } else {
           draft.email.isUnique = true
         }
         return
       case "passwordImmediately":
         draft.password.hasErrors = false
         draft.password.value = action.value
-        if (draft.password.value.length > 50){
+        if (draft.password.value.length > 50) {
           draft.password.hasErrors = true
           draft.password.message = "Password cannot exceed 50 characters."
         }
@@ -105,88 +106,88 @@ function HomeGuest() {
         return
     }
   }
-  
+
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
-  
+
   useEffect(() => {
     if (state.username.value) {
-      const delay = setTimeout(() => dispatch({type: "usernameAfterDelay"}), 800)
+      const delay = setTimeout(() => dispatch({ type: "usernameAfterDelay" }), 800)
       return () => clearTimeout(delay)
     }
-  },[state.username.value])
-  
+  }, [state.username.value])
+
   useEffect(() => {
     if (state.email.value) {
-      const delay = setTimeout(() => dispatch({type: "emailAfterDelay"}), 800)
+      const delay = setTimeout(() => dispatch({ type: "emailAfterDelay" }), 800)
       return () => clearTimeout(delay)
     }
-  },[state.email.value])
-  
+  }, [state.email.value])
+
   useEffect(() => {
     if (state.password.value) {
-      const delay = setTimeout(() => dispatch({type: "passwordAfterDelay"}), 800)
+      const delay = setTimeout(() => dispatch({ type: "passwordAfterDelay" }), 800)
       return () => clearTimeout(delay)
     }
-  },[state.password.value])
+  }, [state.password.value])
 
   useEffect(() => {
-    if(state.username.checkCount){
-        const ourRequest = Axios.CancelToken.source()
-        async function fetchResults() {
-            try {
-                const response = await Axios.post('/doesUsernameExist', {username: state.username.value}, {cancelToken: ourRequest.token})
-                dispatch({type: "usernameUniqueResults", value: response.data});
-            }catch(e){
-                console.log("There was a problem or the request was cancelled.")
-            }
+    if (state.username.checkCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/doesUsernameExist", { username: state.username.value }, { cancelToken: ourRequest.token })
+          dispatch({ type: "usernameUniqueResults", value: response.data })
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled.")
         }
-        fetchResults()
-        return () => ourRequest.cancel()
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
     }
-  },[state.username.checkCount])
+  }, [state.username.checkCount])
 
   useEffect(() => {
-    if(state.email.checkCount){
-        const ourRequest = Axios.CancelToken.source()
-        async function fetchResults() {
-            try {
-                const response = await Axios.post('/doesEmailExist', {email: state.email.value}, {cancelToken: ourRequest.token})
-                dispatch({type: "emailUniqueResults", value: response.data})
-            }catch(e){
-                console.log("There was a problem or the request was cancelled.")
-            }
+    if (state.email.checkCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/doesEmailExist", { email: state.email.value }, { cancelToken: ourRequest.token })
+          dispatch({ type: "emailUniqueResults", value: response.data })
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled.")
         }
-        fetchResults()
-        return () => ourRequest.cancel()
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
     }
-  },[state.email.checkCount])
+  }, [state.email.checkCount])
 
   useEffect(() => {
-    if(state.submitCount){
-        const ourRequest = Axios.CancelToken.source()
-        async function fetchResults() {
-            try {
-                const response = await Axios.post('/register', {username: state.username.value, email: state.email.value, password: state.password.value}, {cancelToken: ourRequest.token})
-                appDispatch({type: "login", data: response.data})
-                appDispatch({type: "flashMessage", value: "Congrats! Welcome to your new account."})
-            }catch(e){
-                console.log("There was a problem or the request was cancelled.")
-            }
+    if (state.submitCount) {
+      const ourRequest = Axios.CancelToken.source()
+      async function fetchResults() {
+        try {
+          const response = await Axios.post("/register", { username: state.username.value, email: state.email.value, password: state.password.value }, { cancelToken: ourRequest.token })
+          appDispatch({ type: "login", data: response.data })
+          appDispatch({ type: "flashMessage", value: "Congrats! Welcome to your new account." })
+        } catch (e) {
+          console.log("There was a problem or the request was cancelled.")
         }
-        fetchResults()
-        return () => ourRequest.cancel()
+      }
+      fetchResults()
+      return () => ourRequest.cancel()
     }
-  },[state.submitCount])
-  
+  }, [state.submitCount])
+
   function handleSubmit(e) {
     e.preventDefault()
-    dispatch({type: "usernameImmediately", value: state.username.value})
-    dispatch({type: "usernameAfterDelay", value: state.username.value, noRequest: true})
-    dispatch({type: "emailImmediately", value: state.email.value})
-    dispatch({type: "emailAfterDelay", value: state.email.value, noRequest: true})
-    dispatch({type: "passwordImmediately", value: state.password.value})
-    dispatch({type: "passwordAfterDelay", value: state.password.value})
-    dispatch({type: "submitForm"})
+    dispatch({ type: "usernameImmediately", value: state.username.value })
+    dispatch({ type: "usernameAfterDelay", value: state.username.value, noRequest: true })
+    dispatch({ type: "emailImmediately", value: state.email.value })
+    dispatch({ type: "emailAfterDelay", value: state.email.value, noRequest: true })
+    dispatch({ type: "passwordImmediately", value: state.password.value })
+    dispatch({ type: "passwordAfterDelay", value: state.password.value })
+    dispatch({ type: "submitForm" })
   }
 
   return (
@@ -202,16 +203,16 @@ function HomeGuest() {
               <label htmlFor="username-register" className="text-muted mb-1">
                 <small>Username</small>
               </label>
-              <input onChange={e => dispatch({type: "usernameImmediately", value: e.target.value})} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
+              <input onChange={(e) => dispatch({ type: "usernameImmediately", value: e.target.value })} id="username-register" name="username" className="form-control" type="text" placeholder="Pick a username" autoComplete="off" />
               <CSSTransition in={state.username.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
-                <div className={"alert alert-danger small liveValidateMessage"}>{state.username.message}</div>
+                <div className="alert alert-danger small liveValidateMessage">{state.username.message}</div>
               </CSSTransition>
             </div>
             <div className="form-group">
               <label htmlFor="email-register" className="text-muted mb-1">
                 <small>Email</small>
               </label>
-              <input onChange={e => dispatch({type: "emailImmediately", value: e.target.value})} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
+              <input onChange={(e) => dispatch({ type: "emailImmediately", value: e.target.value })} id="email-register" name="email" className="form-control" type="text" placeholder="you@example.com" autoComplete="off" />
               <CSSTransition in={state.email.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger small liveValidateMessage">{state.email.message}</div>
               </CSSTransition>
@@ -220,7 +221,7 @@ function HomeGuest() {
               <label htmlFor="password-register" className="text-muted mb-1">
                 <small>Password</small>
               </label>
-              <input onChange={e => dispatch({type: "passwordImmediately", value: e.target.value})} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
+              <input onChange={(e) => dispatch({ type: "passwordImmediately", value: e.target.value })} id="password-register" name="password" className="form-control" type="password" placeholder="Create a password" />
               <CSSTransition in={state.password.hasErrors} timeout={330} classNames="liveValidateMessage" unmountOnExit>
                 <div className="alert alert-danger small liveValidateMessage">{state.password.message}</div>
               </CSSTransition>

@@ -3,14 +3,12 @@ import Axios from "axios"
 import { useParams, Link } from "react-router-dom"
 import LoadingDotsIcon from "./LoadingDotsIcon"
 import StateContext from "../StateContext"
-import Capitalize from 'react-capitalize'
-
 
 function ProfileFollowers(props) {
-    const appState = useContext(StateContext)
-    const { username } = useParams()
-    const [isLoading, setIsLoading] = useState(true)
-    const [posts, setPosts] = useState([])
+  const appState = useContext(StateContext)
+  const { username } = useParams()
+  const [isLoading, setIsLoading] = useState(true)
+  const [posts, setPosts] = useState([])
 
   useEffect(() => {
     const ourRequest = Axios.CancelToken.source()
@@ -34,38 +32,26 @@ function ProfileFollowers(props) {
 
   return (
     <div className="list-group">
-      {posts.map((follower, index) => {
-        return (
-          <Link key={index} to={`/profile/${follower.username}`} className="list-group-item list-group-item-action">
-            <img className="avatar-tiny" src={follower.avatar} /> 
-            <Capitalize>
-            {follower.username}
-            </Capitalize>
-          </Link>
-        )
-      })}
+      {posts.length > 0 &&
+        posts.map((follower, index) => {
+          return (
+            <Link key={index} to={`/profile/${follower.username}`} className="list-group-item list-group-item-action">
+              <img className="avatar-tiny" src={follower.avatar} /> {follower.username}
+            </Link>
+          )
+        })}
       {posts.length == 0 && appState.user.username == username && <p className="lead text-muted text-center">You don&rsquo;t have any followers yet.</p>}
       {posts.length == 0 && appState.user.username != username && (
-          <p className="lead text-muted text-center">
-          <Capitalize>{username}</Capitalize> doesn't have any followers yet.
-            {appState.loggedIn && (
-                <>
-                {" "}
-                Be the first to follow {" "}
-                <Capitalize>{username}</Capitalize>!
-                {" "}
-                </>
-            )}
-            {!appState.loggedIn && (
-                <>
-                    If you want to follow 
-                    {" "}
-                    <Capitalize>{username}</Capitalize>
-                    {" "}
-                    you need to <Link to="/">sign up</Link> for an account first. 
-                </>
-            )}
-          </p>
+        <p className="lead text-muted text-center">
+          {username} doesn&rsquo;t have any followers yet.
+          {appState.loggedIn && " Be the first to follow them!"}
+          {!appState.loggedIn && (
+            <>
+              {" "}
+              If you want to follow them you need to <Link to="/">sign up</Link> for an account first.{" "}
+            </>
+          )}
+        </p>
       )}
     </div>
   )

@@ -6,10 +6,7 @@ import StateContext from "../StateContext"
 import ProfilePosts from "./ProfilePosts"
 import ProfileFollowers from "./ProfileFollowers"
 import ProfileFollowing from "./ProfileFollowing"
-import {useImmer} from 'use-immer'
-import Capitalize from 'react-capitalize'
-import NotFound from "./NotFound"
-
+import { useImmer } from "use-immer"
 
 function Profile() {
   const { username } = useParams()
@@ -23,8 +20,7 @@ function Profile() {
       profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
       isFollowing: false,
       counts: { postCount: "", followerCount: "", followingCount: "" }
-    },
-    notFound: false
+    }
   })
 
   useEffect(() => {
@@ -33,16 +29,9 @@ function Profile() {
     async function fetchData() {
       try {
         const response = await Axios.post(`/profile/${username}`, { token: appState.user.token }, { cancelToken: ourRequest.token })
-        if(!response.data) {
-          setState(draft => {
-            draft.notFound = true
-          })
-        }else {
-          setState(draft => {
-            draft.notFound = false
-            draft.profileData = response.data
-          })
-        }
+        setState(draft => {
+          draft.profileData = response.data
+        })
       } catch (e) {
         console.log("There was a problem.")
       }
@@ -54,10 +43,11 @@ function Profile() {
   }, [username])
 
   useEffect(() => {
-    if(state.startFollowingRequestCount){
+    if (state.startFollowingRequestCount) {
       setState(draft => {
         draft.followActionLoading = true
       })
+
       const ourRequest = Axios.CancelToken.source()
 
       async function fetchData() {
@@ -80,10 +70,11 @@ function Profile() {
   }, [state.startFollowingRequestCount])
 
   useEffect(() => {
-    if(state.stopFollowingRequestCount){
+    if (state.stopFollowingRequestCount) {
       setState(draft => {
         draft.followActionLoading = true
       })
+
       const ourRequest = Axios.CancelToken.source()
 
       async function fetchData() {
@@ -105,34 +96,31 @@ function Profile() {
     }
   }, [state.stopFollowingRequestCount])
 
-  function startFollowing(){
+  function startFollowing() {
     setState(draft => {
       draft.startFollowingRequestCount++
     })
   }
 
-  function stopFollowing(){
+  function stopFollowing() {
     setState(draft => {
       draft.stopFollowingRequestCount++
     })
   }
-  if(state.notFound) {
-    return <NotFound/>
-  }
+
   return (
     <Page title="Profile Screen">
       <h2>
-        <img className="avatar-small" src={state.profileData.profileAvatar} /> 
-        <Capitalize>{state.profileData.profileUsername}</Capitalize>
-        {appState.loggedIn && !state.profileData.isFollowing && appState.user.username != state.profileData.profileUsername && state.profileData.profileUsername != '...' && (
+        <img className="avatar-small" src={state.profileData.profileAvatar} /> {state.profileData.profileUsername}
+        {appState.loggedIn && !state.profileData.isFollowing && appState.user.username != state.profileData.profileUsername && state.profileData.profileUsername != "..." && (
           <button onClick={startFollowing} disabled={state.followActionLoading} className="btn btn-primary btn-sm ml-2">
-          Follow <i className="fas fa-user-plus"></i>
-        </button>
+            Follow <i className="fas fa-user-plus"></i>
+          </button>
         )}
-        {appState.loggedIn && state.profileData.isFollowing && appState.user.username != state.profileData.profileUsername && state.profileData.profileUsername != '...' && (
+        {appState.loggedIn && state.profileData.isFollowing && appState.user.username != state.profileData.profileUsername && state.profileData.profileUsername != "..." && (
           <button onClick={stopFollowing} disabled={state.followActionLoading} className="btn btn-danger btn-sm ml-2">
-          Stop Following <i className="fas fa-user-times"></i>
-        </button>
+            Stop Following <i className="fas fa-user-times"></i>
+          </button>
         )}
       </h2>
 
@@ -149,15 +137,15 @@ function Profile() {
       </div>
 
       <Switch>
-          <Route exact path="/profile/:username">
-            <ProfilePosts />
-          </Route>
-          <Route path="/profile/:username/followers">
-            <ProfileFollowers />
-          </Route>
-          <Route path="/profile/:username/following">
-            <ProfileFollowing />
-          </Route>
+        <Route exact path="/profile/:username">
+          <ProfilePosts />
+        </Route>
+        <Route path="/profile/:username/followers">
+          <ProfileFollowers />
+        </Route>
+        <Route path="/profile/:username/following">
+          <ProfileFollowing />
+        </Route>
       </Switch>
     </Page>
   )

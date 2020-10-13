@@ -22,8 +22,8 @@ function ViewSinglePost(props) {
     async function fetchPost() {
       try {
         const response = await Axios.get(`/post/${id}`, { cancelToken: ourRequest.token })
-        setPost(response.data)
-        setIsLoading(false)
+        setPost(response.data);
+        setIsLoading(false);
       } catch (e) {
         console.log("There was a problem or the request was cancelled.")
       }

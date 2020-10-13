@@ -89,16 +89,16 @@ function EditPost(props) {
     
     async function fetchPost() {
         try {
-        const response = await Axios.get(`/post/${state.id}`, { cancelToken: ourRequest.token })
+        const response = await Axios.get(`/post/${state.id}`, { cancelToken: ourRequest.token });
         if(response.data){
-            dispatch({type: "fetchComplete", value: response.data})
+            dispatch({type: "fetchComplete", value: response.data});
             if(appState.user.username != response.data.author.username){
-                appDispatch({type: "flashMessage", value: "You do not have permission to edit that post"})
+                appDispatch({type: "flashMessage", value: "You do not have permission to edit that post"});
                 // redirect to homepage
-                props.history.push("/")
+                props.history.push("/");
             }
         } else {
-            dispatch({type: "notFound"})
+            dispatch({type: "notFound"});
         }
     } catch (e) {
         console.log("There was a problem or the request was cancelled.")

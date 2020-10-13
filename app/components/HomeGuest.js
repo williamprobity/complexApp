@@ -135,7 +135,7 @@ function HomeGuest() {
         async function fetchResults() {
             try {
                 const response = await Axios.post('/doesUsernameExist', {username: state.username.value}, {cancelToken: ourRequest.token})
-                dispatch({type: "usernameUniqueResults", value: response.data})
+                dispatch({type: "usernameUniqueResults", value: response.data});
             }catch(e){
                 console.log("There was a problem or the request was cancelled.")
             }

@@ -7,7 +7,7 @@ import Post from './Post'
 
 function Search() {
     const appDispatch = useContext(DispatchContext)
-
+    
     const [state, setState] = useImmer({
         searchTerm: '', 
         results: [],
@@ -37,6 +37,7 @@ function Search() {
         })
         }
     }, [state.searchTerm])
+
 
     useEffect(() => {
         if(state.requestCount){
@@ -70,19 +71,19 @@ function Search() {
         })
     }
         return (
-            <div className="search-overlay">
+            <>
                 <div className="search-overlay-top shadow-sm">
                     <div className="container container--narrow">
-                    <label htmlFor="live-search-field" className="search-overlay-icon">
-                        <i className="fas fa-search"></i>
-                    </label>
-                    <input onChange={handleInput} autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
-                    <span onClick={() => appDispatch({type: "closeSearch"})} className="close-live-search">
-                        <i className="fas fa-times-circle"></i>
-                    </span>
+                        <label htmlFor="live-search-field" className="search-overlay-icon">
+                            <i className="fas fa-search"></i>
+                        </label>
+                        <input onChange={handleInput} autoFocus type="text" autoComplete="off" id="live-search-field" className="live-search-field" placeholder="What are you interested in?" />
+                        <span onClick={() => appDispatch({type: "closeSearch"})} className="close-live-search">
+                            <i className="fas fa-times-circle"></i>
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div className="search-overlay-bottom">
+                <div className="search-overlay-bottom">
                     <div className="container container--narrow py-3">
                         <div className={"circle-loader " + (state.show == "loading" ? 'circle-loader--visible' : '')}></div>
                         <div className={"live-search-results " + (state.show == "results" ? 'live-search-results--visible' : '')}>
@@ -100,7 +101,7 @@ function Search() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
 }
 

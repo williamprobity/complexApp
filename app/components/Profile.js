@@ -8,6 +8,7 @@ import ProfileFollowers from "./ProfileFollowers"
 import ProfileFollowing from "./ProfileFollowing"
 import {useImmer} from 'use-immer'
 import Capitalize from 'react-capitalize'
+import NotFound from "./NotFound"
 
 
 function Profile() {
@@ -22,7 +23,8 @@ function Profile() {
       profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
       isFollowing: false,
       counts: { postCount: "", followerCount: "", followingCount: "" }
-    }
+    },
+    notFound: false
   })
 
   useEffect(() => {
@@ -31,9 +33,16 @@ function Profile() {
     async function fetchData() {
       try {
         const response = await Axios.post(`/profile/${username}`, { token: appState.user.token }, { cancelToken: ourRequest.token })
-        setState(draft => {
-          draft.profileData = response.data
-        })
+        if(!response.data) {
+          setState(draft => {
+            draft.notFound = true
+          })
+        }else {
+          setState(draft => {
+            draft.notFound = false
+            draft.profileData = response.data
+          })
+        }
       } catch (e) {
         console.log("There was a problem.")
       }
@@ -106,6 +115,9 @@ function Profile() {
     setState(draft => {
       draft.stopFollowingRequestCount++
     })
+  }
+  if(state.notFound) {
+    return <NotFound/>
   }
   return (
     <Page title="Profile Screen">

@@ -34,7 +34,7 @@ function ProfilePosts(props) {
 
   return (
     <div className="list-group">
-      {posts.map(post => {
+      {posts && posts.map(post => {
         return <Post noAuthor={true} post={post} key={post._id} />
       })}
       {posts.length == 0 && appState.user.username == username && <p className="lead text-muted text-center">

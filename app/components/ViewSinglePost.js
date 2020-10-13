@@ -100,10 +100,11 @@ function ViewSinglePost(props) {
       </p>
 
       <div className="body-content">
-        <ReactMarkdown source={post.body} allowedTypes={["paragraph", "strong", "emphasis", "text", "heading", "list", "listItem"]} />
+      <p source={post.body}></p>
       </div>
-    </Page>
-  )
-}
+      </Page>
+      )
+    }
+    // <ReactMarkdown source={post.body} allowedTypes={["paragraph", "strong", "emphasis", "text", "heading", "list", "listItem"]} />
 
 export default withRouter(ViewSinglePost)
